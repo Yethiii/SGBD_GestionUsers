@@ -1,4 +1,11 @@
 <x-app-layout>
+
+    @if (session('success'))
+        <div class="bg-green-500 text-white p-4 mb-4 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="container mx-auto py-8">
         <h1 class="text-2xl font-bold mb-6">Liste des Utilisateurs</h1>
 
@@ -20,6 +27,11 @@
                     <td class="py-2 px-4 border-b">
                         <a href="{{ route('users.show', $user->id) }}" class="text-blue-500">Voir</a>
                         <a href="{{ route('users.edit', $user->id) }}" class="text-yellow-500 ml-2">Modifier</a>
+                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500">Supprimer</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
