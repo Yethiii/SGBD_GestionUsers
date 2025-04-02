@@ -2,8 +2,9 @@
     <div class="container mx-auto py-8">
         <h1 class="text-2xl font-bold mb-6">Modifier les informations</h1>
 
-        <form action="{{ route('users.update') }}" @method('PUT')>
+        <form action="{{ route('users.update', $user->id) }}" method="POST")>
             @csrf
+            @method('PUT')
             <div class="mb-4">
                 <label class="block text-sm font-bold mb-2">Nom</label>
                 <input type="text" name="name" class="w-full border border-gray-300 px-3 py-2" value="{{ old('name', $user->name) }}">

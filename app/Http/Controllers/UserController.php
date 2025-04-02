@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Validation\Rule;
+
 
 class UserController extends Controller
 
@@ -70,7 +72,26 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        $user = User::find($id);
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'password' => 'nullable|string|min:8', // Nullable pour ne pas forcer le changement
+            'role' => 'required|in:user,admin',
+        ]);
+
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        if ($request->filled('password')) {
+            $user->password = bcrypt($validatedData['password']);
+        }
+        $user->role = $validatedData['role'];
+        $user->save();
+
+        return redirect()->route('users.show', $user->id)->with('success', 'Utilisateur mis à jour avec succès.');
+
     }
 
     /**
